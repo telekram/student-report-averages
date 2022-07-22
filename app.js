@@ -298,8 +298,8 @@ getStudents().forEach((student) => {
   studentResults.set(student, data);
   console.log(`[ Processed Student: ${student} ]`);
 });
-import_fs.default.writeFileSync("./csv/Student-VCDS-and-WorkHabits-Average.csv", getCSV(studentResults));
-console.log("\n[ Finished! Output: ./csv/Student-VCDS-and-WorkHabits-Average.csv ] \n");
+import_fs.default.writeFileSync("./csv/Student-VCDS-Averages-WorkHabits-Totals.csv", getCSV(studentResults));
+console.log("\n[ Finished! Output: ./csv/Student-VCDS-Averages-WorkHabits-Totals.csv ] \n");
 function getCSV(sResults) {
   const header = "StudentCode,FirstName,Surname,FormGroup,VCDSAverage,WorkHabitsAverage";
   let csv = "";
@@ -321,7 +321,7 @@ function getWorkHabitsAverage(studentCode) {
       results.push(rowHasWorkHabit(row));
     }
   });
-  return getAverage(results);
+  return getTotal(results);
 }
 function rowHasWorkHabit(row) {
   let workHabitResult = 0;
@@ -330,7 +330,7 @@ function rowHasWorkHabit(row) {
   workHabitResultValues.set("sometimes", 2);
   workHabitResultValues.set("usually", 3);
   workHabitResultValues.set("consistently", 4);
-  if (row.AssessmentType === "Work Habits") {
+  if (row.AssessmentType === "Work Habits" && row.Subject !== "Instrumental Music") {
     const result = row.Result.toLowerCase();
     if (workHabitResultValues.has(result)) {
       workHabitResult = workHabitResultValues.get(result);
@@ -392,4 +392,7 @@ function getAverage(results) {
   const average = sum / results.length;
   return Number(average.toFixed(2));
 }
-//# sourceMappingURL=app.js.map
+function getTotal(results) {
+  const sum = results.reduce((a, b) => a + b, 0);
+  return Number(sum);
+}

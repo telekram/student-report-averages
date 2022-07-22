@@ -34,8 +34,8 @@ getStudents().forEach((student) => {
   console.log(`[ Processed Student: ${student} ]`)
 })
 
-fs.writeFileSync('./csv/Student-VCDS-and-WorkHabits-Average.csv', getCSV(studentResults))
-console.log('\n[ Finished! Output: ./csv/Student-VCDS-and-WorkHabits-Average.csv ] \n')
+fs.writeFileSync('./csv/Student-VCDS-Averages-WorkHabits-Totals.csv', getCSV(studentResults))
+console.log('\n[ Finished! Output: ./csv/Student-VCDS-Averages-WorkHabits-Totals.csv ] \n')
 
 function getCSV (sResults: any): string {
   const header = 'StudentCode,FirstName,Surname,FormGroup,VCDSAverage,WorkHabitsAverage'
@@ -63,7 +63,7 @@ function getWorkHabitsAverage (studentCode: string): number {
     }
   })
 
-  return getAverage(results)
+  return getTotal(results)
 }
 
 function rowHasWorkHabit (row: any): number {
@@ -75,7 +75,7 @@ function rowHasWorkHabit (row: any): number {
   workHabitResultValues.set('usually', 3)
   workHabitResultValues.set('consistently', 4)
 
-  if (row.AssessmentType === 'Work Habits') {
+  if (row.AssessmentType === 'Work Habits' && row.Subject !== 'Instrumental Music') {
     const result = row.Result.toLowerCase()
 
     if (workHabitResultValues.has(result)) {
@@ -159,4 +159,10 @@ function getAverage (results: number[]): number {
   const average: number = sum / results.length
 
   return Number(average.toFixed(2))
+}
+
+function getTotal (results: number[]): number {
+  const sum: number = results.reduce((a, b) => a + b, 0)
+
+  return Number(sum)
 }
